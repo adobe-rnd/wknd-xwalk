@@ -62,7 +62,10 @@ export default function decorate($block) {
     const $button = document.createElement('button');
     const { $tab, title, name } = tab;
     $button.textContent = title;
+    $button.setAttribute('data-tab-index', index);
     $tab.replaceChildren($button);
+
+    tab.$content.setAttribute('data-tab-index', index);
 
     $button.addEventListener('click', () => {
       const $activeButton = $block.querySelector('button.active');
@@ -91,5 +94,15 @@ export default function decorate($block) {
       $button.classList.add('active');
       tab.$content.classList.remove('hidden');
     }
+  });
+
+  document.querySelectorAll('.tab-item').forEach((tabItem) => {
+    tabItem.addEventListener('aue:ui-select', (e) => {
+      if (e.detail.selected) {
+        const index = tabItem.getAttribute('data-tab-index');
+        const button = document.querySelector(`button[data-tab-index="${index}"]`);
+        button.click();
+      }
+    });
   });
 }
